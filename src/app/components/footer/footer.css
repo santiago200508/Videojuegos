@@ -1,0 +1,13 @@
+footer a:hover {
+  color: #00d4ff !important;
+  transition: all 0.3s ease;
+}
+
+.social-links a {
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  color: #00d4ff !important;
+}

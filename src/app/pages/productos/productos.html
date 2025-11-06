@@ -1,0 +1,250 @@
+<div class="container my-5">
+  <!-- Header de Productos -->
+  <div class="row mb-5">
+    <div class="col-md-8">
+      <h1 class="fw-bold">Catálogo de Videojuegos</h1>
+      <p class="text-muted">Encuentra los mejores títulos para todas las plataformas</p>
+    </div>
+    <div class="col-md-4">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Buscar juegos...">
+        <button class="btn btn-primary">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-outline-primary active">Todos</button>
+        <button class="btn btn-outline-primary">Acción</button>
+        <button class="btn btn-outline-primary">Aventura</button>
+        <button class="btn btn-outline-primary">Deportes</button>
+        <button class="btn btn-outline-primary">RPG</button>
+        <button class="btn btn-outline-primary">Estrategia</button>
+        <button class="btn btn-outline-primary">Simulación</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicador de página actual -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <p class="text-muted">
+        Mostrando {{ (paginaActual - 1) * juegosPorPagina + 1 }} - 
+        {{ paginaActual * juegosPorPagina > juegos.length ? juegos.length : paginaActual * juegosPorPagina }} 
+        de {{ juegos.length }} juegos
+      </p>
+    </div>
+  </div>
+
+  <!-- Grid de Productos -->
+  <div class="row g-4">
+    <div class="col-md-4" *ngFor="let juego of juegosPagina">
+      <div class="card product-card h-100 shadow-sm">
+        <div class="position-relative">
+          <img [src]="'assets/img/' + juego.imagen" class="product-image" [alt]="juego.nombre">
+          
+          <!-- Etiqueta (si existe) -->
+          <span *ngIf="juego.etiqueta" class="badge position-absolute top-0 end-0 m-2"
+                [ngClass]="{
+                  'bg-success': juego.etiqueta === 'Nuevo',
+                  'bg-danger': juego.etiqueta === 'Oferta',
+                  'bg-info': juego.etiqueta === 'Popular',
+                  'bg-warning': juego.etiqueta === 'Preventa',
+                  'bg-primary': juego.etiqueta === 'Exclusivo PS5'
+                }">
+            {{ juego.etiqueta }}
+          </span>
+
+          <!-- Overlay con botón Ver más -->
+          <div class="product-overlay">
+            <button class="btn btn-light btn-sm" (click)="verDetalles(juego)">
+              <i class="bi bi-eye"></i> Ver más
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Plataformas -->
+          <div class="mb-2">
+            <span class="badge bg-primary me-1" *ngFor="let plataforma of juego.plataformas">
+              {{ plataforma }}
+            </span>
+          </div>
+
+          <!-- Nombre del juego -->
+          <h5 class="card-title">{{ juego.nombre }}</h5>
+
+          <!-- Descripción corta -->
+          <p class="card-text text-muted small">{{ juego.descripcion.substring(0, 80) }}...</p>
+
+          <!-- Rating -->
+          <div class="rating mb-2">
+            <ng-container *ngFor="let star of [1,2,3,4,5]">
+              <i class="bi" 
+                 [ngClass]="star <= juego.rating ? 'bi-star-fill text-warning' : 'bi-star text-warning'">
+              </i>
+            </ng-container>
+            <span class="text-muted small">({{ juego.rating }})</span>
+          </div>
+
+          <!-- Precio -->
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span *ngIf="juego.precioAntes" class="text-decoration-line-through text-muted me-2">
+                {{ formatearPrecio(juego.precioAntes) }}
+              </span>
+              <span class="h5 mb-0" [ngClass]="juego.descuento ? 'text-danger' : 'text-primary'">
+                {{ formatearPrecio(juego.precio) }}
+              </span>
+            </div>
+            <button class="btn btn-primary">
+              <i class="bi bi-cart-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [ngClass]="{ 'disabled': paginaActual === 1 }">
+            <a class="page-link" (click)="cambiarPagina(paginaActual - 1)" style="cursor: pointer;">
+              Anterior
+            </a>
+          </li>
+          
+          <li class="page-item" *ngFor="let pagina of [1, 2, 3]" 
+              [ngClass]="{ 'active': paginaActual === pagina }">
+            <a class="page-link" (click)="cambiarPagina(pagina)" style="cursor: pointer;">
+              {{ pagina }}
+            </a>
+          </li>
+          
+          <li class="page-item" [ngClass]="{ 'disabled': paginaActual === totalPaginas }">
+            <a class="page-link" (click)="cambiarPagina(paginaActual + 1)" style="cursor: pointer;">
+              Siguiente
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Detalles del Juego -->
+<div class="modal fade show" *ngIf="juegoSeleccionado" 
+     style="display: block; background: rgba(0,0,0,0.5);" 
+     (click)="cerrarModal()">
+  <div class="modal-dialog modal-lg modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">{{ juegoSeleccionado.nombre }}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- Imagen del juego -->
+          <div class="col-md-5">
+            <img [src]="'assets/img/' + juegoSeleccionado.imagen" 
+                 class="img-fluid rounded shadow" 
+                 [alt]="juegoSeleccionado.nombre">
+            
+            <!-- Rating grande -->
+            <div class="text-center mt-3">
+              <div class="rating-large mb-2">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i class="bi fs-4" 
+                     [ngClass]="star <= juegoSeleccionado.rating ? 'bi-star-fill text-warning' : 'bi-star text-warning'">
+                  </i>
+                </ng-container>
+              </div>
+              <p class="mb-0"><strong>{{ juegoSeleccionado.rating }}</strong> / 5.0</p>
+            </div>
+          </div>
+
+          <!-- Información del juego -->
+          <div class="col-md-7">
+            <div class="mb-3">
+              <span class="badge bg-secondary me-1" *ngFor="let plataforma of juegoSeleccionado.plataformas">
+                {{ plataforma }}
+              </span>
+              <span *ngIf="juegoSeleccionado.etiqueta" 
+                    class="badge"
+                    [ngClass]="{
+                      'bg-success': juegoSeleccionado.etiqueta === 'Nuevo',
+                      'bg-danger': juegoSeleccionado.etiqueta === 'Oferta',
+                      'bg-info': juegoSeleccionado.etiqueta === 'Popular',
+                      'bg-warning': juegoSeleccionado.etiqueta === 'Preventa'
+                    }">
+                {{ juegoSeleccionado.etiqueta }}
+              </span>
+            </div>
+
+            <p class="text-muted">{{ juegoSeleccionado.descripcion }}</p>
+
+            <div class="mb-3">
+              <strong><i class="bi bi-tag me-2"></i>Categoría:</strong>
+              <span class="ms-2">{{ juegoSeleccionado.categoria }}</span>
+            </div>
+
+            <!-- Características -->
+            <div class="mb-3">
+              <strong class="d-block mb-2"><i class="bi bi-check-circle me-2"></i>Características:</strong>
+              <ul class="list-unstyled ms-4">
+                <li *ngFor="let caracteristica of juegoSeleccionado.caracteristicas" class="mb-1">
+                  <i class="bi bi-chevron-right text-primary me-2"></i>{{ caracteristica }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Requisitos (si existen) -->
+            <div class="mb-3" *ngIf="juegoSeleccionado.requisitos">
+              <strong class="d-block mb-2"><i class="bi bi-cpu me-2"></i>Requisitos Mínimos:</strong>
+              <ul class="list-unstyled ms-4">
+                <li *ngFor="let requisito of juegoSeleccionado.requisitos" class="mb-1 small text-muted">
+                  <i class="bi bi-dot"></i>{{ requisito }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Precio y botones -->
+            <div class="bg-light p-3 rounded">
+              <div class="mb-3">
+                <div *ngIf="juegoSeleccionado.precioAntes" class="mb-2">
+                  <span class="text-decoration-line-through text-muted">
+                    {{ formatearPrecio(juegoSeleccionado.precioAntes) }}
+                  </span>
+                  <span class="badge bg-danger ms-2">
+                    -{{ juegoSeleccionado.descuento }}%
+                  </span>
+                </div>
+                <div class="h3 mb-0 text-primary">
+                  {{ formatearPrecio(juegoSeleccionado.precio) }}
+                  <small class="text-muted fs-6">COP</small>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-lg">
+                  <i class="bi bi-cart-plus me-2"></i>Agregar al Carrito
+                </button>
+                <button class="btn btn-success btn-lg">
+                  <i class="bi bi-credit-card me-2"></i>Comprar Ahora
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

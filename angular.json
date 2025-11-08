@@ -1,22 +1,19 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
   "projects": {
     "videojuegos": {
       "projectType": "application",
-      "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "root": "",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/videojuegos",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
@@ -34,29 +31,15 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
-            "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ]
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
-              "outputHashing": "all",
+              "baseHref": "/Videojuegos/",
               "optimization": true,
-              "sourceMap": false,
+              "outputHashing": "all",
               "extractLicenses": true,
-              "baseHref": "/Videojuegos/"
+              "sourceMap": false
             },
             "development": {
               "optimization": false,
@@ -65,12 +48,20 @@
             }
           },
           "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "videojuegos:build:production"
+            },
+            "development": {
+              "buildTarget": "videojuegos:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
-  },
-  "defaultProject": "videojuegos",
-  "cli": {
-    "analytics": "d6e2ba74-061d-4b96-a330-e9dd7ad6ae50"
   }
 }

@@ -15,21 +15,6 @@
     </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-outline-primary active">Todos</button>
-        <button class="btn btn-outline-primary">Acción</button>
-        <button class="btn btn-outline-primary">Aventura</button>
-        <button class="btn btn-outline-primary">Deportes</button>
-        <button class="btn btn-outline-primary">RPG</button>
-        <button class="btn btn-outline-primary">Estrategia</button>
-        <button class="btn btn-outline-primary">Simulación</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Indicador de página actual -->
   <div class="row mb-3">
     <div class="col-12">
@@ -102,7 +87,7 @@
                 {{ formatearPrecio(juego.precio) }}
               </span>
             </div>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" (click)="agregarAlCarrito(juego)">
               <i class="bi bi-cart-plus"></i> Agregar
             </button>
           </div>
@@ -237,8 +222,8 @@
                 <button class="btn btn-primary btn-lg">
                   <i class="bi bi-cart-plus me-2"></i>Agregar al Carrito
                 </button>
-                <button class="btn btn-success btn-lg">
-                  <i class="bi bi-credit-card me-2"></i>Comprar Ahora
+                <button class="btn btn-primary btn-lg" (click)="agregarAlCarrito(juegoSeleccionado!)">
+                  <i class="bi bi-cart-plus me-2"></i>Agregar al Carrito
                 </button>
               </div>
             </div>

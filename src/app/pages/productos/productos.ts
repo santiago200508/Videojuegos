@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JUEGOS, Juego } from '../../data/juegos';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-productos',
@@ -17,8 +18,8 @@ export class Productos {
   totalPaginas = 3;
   juegoSeleccionado: Juego | null = null;
 
-  constructor() {
-    this.cargarJuegosPagina();
+  constructor(private carritoService: CarritoService) {
+  this.cargarJuegosPagina();
   }
 
   cargarJuegosPagina() {
@@ -48,4 +49,8 @@ export class Productos {
   calcularDescuento(precioAntes: number, precioAhora: number): number {
     return Math.round(((precioAntes - precioAhora) / precioAntes) * 100);
   }
+  agregarAlCarrito(juego: Juego) {
+  this.carritoService.agregarAlCarrito(juego);
+  alert(`¡${juego.nombre} agregado al carrito!`);
+}
 }

@@ -49,86 +49,72 @@
   </button>
 </div>
 
-<!-- Sección de Categorías -->
+    <!-- Categorías Populares -->
+     
 <div class="container my-5">
   <h2 class="text-center mb-5 fw-bold">Categorías Populares</h2>
   <div class="row g-4">
     <div class="col-md-3">
-      <div class="category-card text-center p-4">
+      <div class="category-card text-center p-4" routerLink="/productos" style="cursor: pointer;">
         <img src="assets/img/category-accion.jpg" class="category-img mb-3" alt="Acción">
         <h5 class="mt-3">Acción</h5>
+        <p class="text-muted">50+ Juegos</p>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="category-card text-center p-4">
+      <div class="category-card text-center p-4" routerLink="/productos" style="cursor: pointer;">
         <img src="assets/img/category-deportes.jpg" class="category-img mb-3" alt="Deportes">
         <h5 class="mt-3">Deportes</h5>
+        <p class="text-muted">30+ Juegos</p>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="category-card text-center p-4">
+      <div class="category-card text-center p-4" routerLink="/productos" style="cursor: pointer;">
         <img src="assets/img/category-aventura.jpg" class="category-img mb-3" alt="Aventura">
         <h5 class="mt-3">Aventura</h5>
+        <p class="text-muted">40+ Juegos</p>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="category-card text-center p-4">
+      <div class="category-card text-center p-4" routerLink="/productos" style="cursor: pointer;">
         <img src="assets/img/category-simulacion.jpg" class="category-img mb-3" alt="Simulación">
         <h5 class="mt-3">Simulación</h5>
+        <p class="text-muted">25+ Juegos</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Juegos Destacados -->
+<!-- Juegos Destacados -->
 <div class="bg-light py-5">
   <div class="container">
     <h2 class="text-center mb-5 fw-bold">Juegos Destacados</h2>
     <div class="row g-4">
-      <div class="col-md-4">
+      <div class="col-md-4" *ngFor="let juego of juegosDestacados">
         <div class="card game-card h-100 shadow-sm">
-          <img src="assets/img/game-1.jpg" class="card-img-top" alt="Cyber Warriors 2025" style="height: 200px; object-fit: cover;">
+          <img [src]="'assets/img/' + juego.imagen" class="card-img-top" [alt]="juego.nombre" style="height: 200px; object-fit: cover;">
           <div class="card-body">
-            <span class="badge bg-success mb-2">Nuevo</span>
-            <h5 class="card-title">Cyberpunk 2077</h5>
-            <p class="card-text text-muted">Acción, Aventura, futurista</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="h5 mb-0 text-primary">COP 199.900</span>
-              <button class="btn btn-primary">
-                <i class="bi bi-cart-plus"></i> Agregar
-              </button>
+            <span class="badge mb-2" 
+                  [ngClass]="{
+                    'bg-success': juego.etiqueta === 'Nuevo',
+                    'bg-info': juego.etiqueta === 'Popular',
+                    'bg-danger': juego.etiqueta === 'Oferta',
+                    'bg-warning': juego.etiqueta === 'Preventa'
+                  }">
+              {{ juego.etiqueta || 'Destacado' }}
+            </span>
+            <h5 class="card-title">{{ juego.nombre }}</h5>
+            <p class="card-text text-muted">{{ juego.categoria }}</p>
+            <div class="rating mb-2">
+              <ng-container *ngFor="let star of [1,2,3,4,5]">
+                <i class="bi" [ngClass]="star <= juego.rating ? 'bi-star-fill text-warning' : 'bi-star text-warning'"></i>
+              </ng-container>
+              <span class="text-muted small">({{ juego.rating }})</span>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card game-card h-100 shadow-sm">
-          <img src="assets/img/game-2.jpg" class="card-img-top" alt="Racing Legends" style="height: 200px; object-fit: cover;">
-          <div class="card-body">
-            <span class="badge bg-danger mb-2">Oferta -30%</span>
-            <h5 class="card-title">Need For Speed</h5>
-            <p class="card-text text-muted">Carreras, Deportes</p>
             <div class="d-flex justify-content-between align-items-center">
-              <span class="h5 mb-0 text-primary">COP 179.900</span>
-              <button class="btn btn-primary">
-                <i class="bi bi-cart-plus"></i> Agregar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card game-card h-100 shadow-sm">
-          <img src="assets/img/game-3.avif" class="card-img-top" alt="Mystery Island" style="height: 200px; object-fit: cover;">
-          <div class="card-body">
-            <span class="badge bg-info mb-2">Popular</span>
-            <h5 class="card-title">Minecraft</h5>
-            <p class="card-text text-muted">Aventura, Puzzle, mundo abierto</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="h5 mb-0 text-primary">COP 129.900</span>
-              <button class="btn btn-primary">
+              <span class="h5 mb-0 text-primary">{{ formatearPrecio(juego.precio) }}</span>
+              <button class="btn btn-primary" (click)="agregarAlCarrito(juego)">
                 <i class="bi bi-cart-plus"></i> Agregar
               </button>
             </div>

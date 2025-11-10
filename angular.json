@@ -13,6 +13,7 @@
             "outputPath": "dist/videojuegos",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
             "polyfills": ["zone.js"],
             "assets": [
               {
@@ -31,7 +32,9 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
-            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -63,5 +66,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b03684ed-15fb-4e89-9a9e-a43cd7a68b67"
   }
 }
